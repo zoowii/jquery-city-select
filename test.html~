@@ -6,14 +6,12 @@
 		<script type='text/javascript' src='city_select.js'></script>
 		<script type='text/javascript'>
 		$(function() {
-			city_select.select($("#province_select"), $("#my_input"));
+			city_select.select($("#province_select"));
 		});
 		</script>
 		<title>Test</title>
 	</head>
 	<body>
 		<div id='province_select'></div>
-		<br />
-		<input type='text' id='my_input' />
 	</body>
 </html>
