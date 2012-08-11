@@ -1,101 +1,70 @@
+/**
+ * Created with JetBrains PhpStorm.
+ * User: Administrator
+ * Date: 12-8-7
+ * Time: 上午10:38
+ * To change this template use File | Settings | File Templates.
+ */
+var email_re = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
 
-function getProvincies() {
-	var prov_array = [];
-	for(var i=0;i<provinceAndCityData.province.length;i++) {
-		var tmp = provinceAndCityData.province[i];
-		prov_array[i] = {
-			id: tmp.id,
-			code: tmp.code,
-			name: tmp.name
-		};
-	}
-	return prov_array;
+$("#User_email").blur(function() {
+    var email = $(this).val();
+
+    if(!email_re.test(email)) {
+        $("#email_error_msg").html('<span style="color: red; font-size: 12px;">邮箱不合法！</span>');
+        return false;
+    } else {
+        $.get('index.php?r=validate/emailCanRegister', {
+            email: email
+        }, function(data) {
+            var json = eval("(" + data + ")");
+            if(json.result == true) {
+                $("#email_error_msg").html('<span style="color: green; font-size: 12px;">验证通过！</span>');
+            } else {
+                $("#email_error_msg").html('<span style="color: red; font-size: 12px;">邮箱已注册！</span>');
+            }
+        });
+    }
+});
+
+$("#User_password").blur(function() {
+    var password = $(this).val();
+    if(password.length < 5 || password.length > 30) {
+        $("#password_error_msg").html('<span style="color: red; font-size: 12px;">密码长度需大于4小于31！</span>');
+    } else {
+        $("#password_error_msg").html('<span style="color: green; font-size: 12px;">验证通过！</span>');
+    }
+    if($("#repeat_password_input").val() == '') {
+    	$("#repeat_password_error_msg").html('');
+    	return;
+    }
+    checkRepeatPassword();
+});
+
+function checkRepeatPassword() {
+    var repeat_password = $("#repeat_password_input").val();
+    var password = $("#User_password").val();
+    if(password != repeat_password) {
+        $("#repeat_password_error_msg").html('<span style="color: red; font-size: 12px;">密码重复错误！</span>');
+    } else {
+        $("#repeat_password_error_msg").html('<span style="color: green; font-size: 12px;">验证通过！</span>');
+    }
 }
 
-function getCities(provinceCode) {
-	for(var i=0;i<provinceAndCityData.province.length;i++) {
-		var tmp = provinceAndCityData.province[i];
-		if(tmp.code == provinceCode) {
-			var cities_tmp = tmp.city;
-			var city_array = [];
-			for(var j=0;j<cities_tmp.length;j++) {
-				var city_tmp = cities_tmp[j];
-				city_array[j] = {
-					id: city_tmp.id,
-					code: city_tmp.code,
-					name: city_tmp.name
-				};
-			}
-			return city_array;
+$("#checkcode_input").keyup(function() {
+	var checkcode = $(this).val();
+	$.get('/index.php?r=user/checkCheckCode', {
+		checkcode: checkcode
+	}, function(data) {
+		if(data == 'true') {
+			$("#checkcode_error_msg").html('<span style="color: green; font-size: 12px;">验证通过！</span>');
+		} else {
+			$("#checkcode_error_msg").html('<span style="color: red; font-size: 12px;">验证码错误！</span>');
 		}
-	}
-	return [];
-}
+	}, 'html');
+});
 
-function getAreas(cityCode) {
-	for(var i=0;i<provinceAndCityData.province.length;i++) {
-		var province = provinceAndCityData.province[i];
-		for(var j=0;j<province.city.length;j++) {
-			var city = province.city[j];
-			if(city.code == cityCode) { // found the city
-				var areas = city.area;
-				var area_array = [];
-				for(var k=0;k<areas.length;k++) {
-					var area = areas[k];
-					area_array[k] = {
-						id: area.id,
-						code: area.code,
-						name: area.name
-					};
-				}
-				return area_array;
-			}
-		}
-	}
-}
+$("#repeat_password_input").blur(checkRepeatPassword);
 
-var city_select = {
-	getProvincies: getProvincies,
-	getCities: getCities,
-	getAreas: getAreas,
-	select: function(jqueryElement) {
-		var el = jqueryElement;
-		el.html('');
-		var outer1 = $("<select></select>");
-		var provincies = getProvincies();
-		for(var i=0;i<provincies.length;i++) {
-			var province = provincies[i];
-			outer1.append($("<option value='" + province.code + "'>" + province.name + "</option>"));
-		}
-		var outer2 = $("<select></select>");
-		var outer3 = $("<select></select>");
-		el.append(outer1);
-		el.append(outer2);
-		el.append(outer3);
-		outer1.change(function() {
-			var provinceCode = $(this).val();
-			el.attr('code', provinceCode);
-			var cities = getCities(provinceCode);
-			outer2.html('');
-			outer3.html('');
-			for(var i=0;i<cities.length;i++) {
-				var city = cities[i];
-				outer2.append($("<option value='" + city.code + "'>" + city.name + "</option>"));
-			}
-			outer2.change(function() {
-				var cityCode = $(this).val();
-				el.attr('code', cityCode);
-				var areas = getAreas(cityCode);
-				outer3.html('');
-				for(var i=0;i<areas.length;i++) {
-					var area = areas[i];
-					outer3.append($("<option value='" + area.code + "'>" + area.name + "</option>"));
-				}
-				outer3.change(function() {
-					var areaCode = $(this).val();
-					el.attr('code', areaCode);
-				});
-			});
-		});
-	}
-};
+city_select.select($("#hometown_city_select"), $("#User_hometown_city_code"));
+city_select.select($("#current_city_select"), $("#User_current_city_code"));
