@@ -58,8 +58,9 @@ var city_select = {
 	getProvincies: getProvincies,
 	getCities: getCities,
 	getAreas: getAreas,
-	select: function(jqueryElement, input_element) {
+	select: function(jqueryElement, input_element, default_city_code) {
         input_element = input_element||null;
+        default_city_code = default_city_code||null;
 		var el = jqueryElement;
 		el.html('');
 		var outer1 = $("<select></select>");
@@ -113,6 +114,19 @@ var city_select = {
         outer1.trigger('change');
         outer2.trigger('change');
         outer3.trigger('change');
+
+        if(default_city_code != null) {
+            if(default_city_code.length == 6) {
+                var province_code = default_city_code.substring(0, 2) + '0000';
+                var city_code = default_city_code.substring(0, 4) + '00';
+                var district_code = default_city_code;
+                outer1.val(province_code);
+                outer1.trigger('change');
+                outer2.val(city_code);
+                outer2.trigger('change');
+                outer3.val(district_code);
+                outer3.trigger('change');
+            }
+        }
 	}
 };
-
