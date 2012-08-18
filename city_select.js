@@ -130,3 +130,7 @@ var city_select = {
         }
 	}
 };
+
+$.extend({
+	city_select: city_select.select
+});
