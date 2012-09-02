@@ -1,4 +1,5 @@
 
+
 function getProvincies() {
 	var prov_array = [];
 	for(var i=0;i<provinceAndCityData.province.length;i++) {
@@ -63,14 +64,14 @@ var city_select = {
         default_city_code = default_city_code||null;
 		var el = jqueryElement;
 		el.html('');
-		var outer1 = $("<select></select>");
+		var outer1 = $("<select class='city_select'></select>");
 		var provincies = getProvincies();
 		for(var i=0;i<provincies.length;i++) {
 			var province = provincies[i];
 			outer1.append($("<option value='" + province.code + "'>" + province.name + "</option>"));
 		}
-		var outer2 = $("<select></select>");
-		var outer3 = $("<select></select>");
+		var outer2 = $("<select class='city_select'></select>");
+		var outer3 = $("<select class='city_select'></select>");
 		el.append(outer1);
 		el.append(outer2);
 		el.append(outer3);
