@@ -1,7 +1,7 @@
 #jquery-city-select#
 
 ##By [Zoowii](http://blog.nocoding.me)##
-
+---
 city select control based on jquery
 
 now this project is a plugin of jquery.
