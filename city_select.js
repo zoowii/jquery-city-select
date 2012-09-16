@@ -91,7 +91,7 @@
                     var cityCode = $(this).val();
                     el.attr('code', cityCode);
                     if (input_element != null) {
-                        input_element.val(provinceCode);
+                        input_element.val(cityCode);
                     }
                     var areas = getAreas(cityCode);
                     outer3.html('');
@@ -103,7 +103,7 @@
                         var areaCode = $(this).val();
                         el.attr('code', areaCode);
                         if (input_element != null) {
-                            input_element.val(provinceCode);
+                            input_element.val(areaCode);
                         }
                     });
                     outer3.trigger('change');
